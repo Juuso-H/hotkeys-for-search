@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <style>
+.disabled {
+   color: darkgrey;
+}
+</style>
+    <title>Options</title>
+<script src = "options.js"></script>
+  </head>
+  <body style="min-width:400px">
+    <h1>Target Search Websites</h1>
+    <div role="main" style='width:100%'>
+      <form>
+        Website 1 (Default: Alt+Q)&emsp;<input type="text" id="search1" style='width:100%'><br>
+        Website 2 (Default: Alt+W)&emsp;<input type="text" id="search2" style='width:100%'><br>
+        Website 3 (Default: Alt+A)&emsp;<input type="text" id="search3" style='width:100%'><br>
+        Website 4 (Default: Alt+S)&emsp;<input type="text" id="search4" style='width:100%'>
+        <br><br>
+        Go to <a href="#" id="shortcutsLink">Chrome extension shortcuts</a> page to change hotkeys.
+        <br><br>	
+        <div style="display: inline-block"><input type="checkbox" id="openNewTab"><label for="openNewTab"> Search in a new tab</label><br>
+        <input type="checkbox" id="openOnLeft"><label id="openOnLeftLabel" for="openOnLeft"> New tab on left side</label><br>
+        <input type="checkbox" id="openInBackground"><label id="openInBackgroundLabel" for="openInBackground"> New tab in background</label><br>
+        </div>
+		<div style="display: inline-block; float:right; margin-right:10px"><button type="button" id="Defaults">Reset to defaults</button></div>
+      </form>
+    </div>
+  </body>
+</html>
