@@ -8,6 +8,4 @@ Alt+W = Wikipedia
 Alt+A = Google Images
 Alt+S = YouTube
 
-The target search websites and keyboard shortcuts can be changed from the extension settings menu.
-
-The permission to "Read and change all your data on the websites you visit" sounds unfortunately scary. It is required for the extension to have access to selected text when a search is performed.
+Go to Chrome extension shortcuts page to change hotkeys.

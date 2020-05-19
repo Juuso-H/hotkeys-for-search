@@ -14,4 +14,4 @@ Alt+W = Wikipedia
 Alt+A = Google Images  
 Alt+S = YouTube  
 
-The target search websites and keyboard shortcuts can be changed from the extension settings menu.
+Go to Chrome extension shortcuts page to change hotkeys.
