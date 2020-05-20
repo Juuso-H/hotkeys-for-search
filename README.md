@@ -2,6 +2,8 @@
 Chrome extension to add keyboard shortcuts for web search.
 Get the extension on [chrome web store](https://chrome.google.com/webstore/detail/hotkeys-for-search/gfmeadbjkfhkeklgaomifcaihbhpeido).
 
+*Read this in other languages: [English](README.md), [한국어](README.ko.md)
+
 ## Overview
 
 Perform a search for selected text using keyboard shortcuts.
