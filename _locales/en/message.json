@@ -1,0 +1,10 @@
+{
+   "name": {
+      "message": "Hotkeys for Search",
+      "description": "The name of the extension."
+   },
+   "description": {
+      "message": "Perform a search for selected text using keyboard shortcuts.",
+      "description": "The global description of the extension."
+   }
+}
