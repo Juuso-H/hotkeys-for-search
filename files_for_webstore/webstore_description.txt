@@ -1,0 +1,27 @@
+en
+1. Select text on a web page using the mouse.
+2. Press a keyboard shortcut to search for the selected text on your desired website.
+
+Default shortcuts:
+Alt+Q = Google
+Alt+W = Wikipedia
+Alt+A = Google Images
+Alt+S = YouTube
+
+The target search websites and keyboard shortcuts can be changed from the extension settings menu.
+
+Source code: https://github.com/Juuso-h/hotkeys-for-search
+
+ko
+1. 웹 페이지에서 마우스로 검색할 텍스트를 드래그 합니다.
+2. 단축키를 눌러 원하는 웹 사이트에 드래그한 텍스트를 검색합니다.
+
+기본 단축키:  
+Alt+Q = 구글  
+Alt+W = 위키피디아  
+Alt+A = 구글 이미지  
+Alt+S = 유튜브
+
+크롬 확장 프로그램 페이지로 가서 단축키를 변경할 수 있습니다.
+
+소스 코드: https://github.com/Juuso-h/hotkeys-for-search

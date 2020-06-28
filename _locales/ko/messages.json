@@ -1,0 +1,8 @@
+{
+	"name": {
+       "message": "Hotkeys for Search"
+    },
+    "description": {
+       "message": "단축키로 드래그한 텍스트를 검색하는 크롬 확장 프로그램"
+    }
+ }
