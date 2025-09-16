@@ -1,7 +1,4 @@
-var dict = {};
-
-function getDefaultSettings()
-{
+function getDefaultSettings() {
 	var defaultSettings = {};
 	defaultSettings["search1"] = "https://www.google.com/search?q=";
 	defaultSettings["search2"] = "https://en.wikipedia.org/wiki/Special:Search/";
@@ -17,8 +14,7 @@ function getDefaultSettings()
 // Check if string is a valid URL
 // From StackOverflow
 // https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
-function validURL(str)
-{
+function validURL(str) {
 	var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
 		'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
 		'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
@@ -28,133 +24,109 @@ function validURL(str)
 	return !!pattern.test(str);
 }
 
-chrome.runtime.onInstalled.addListener(function(details)
-{
-	chrome.storage.sync.get('dict', function(storageDict)
-	{
-		// Copy settings from old version to new
-		if (storageDict.search1 != null)
-		{
-			storageDict.openNewTab = (storageDict.openNewTab == "true");
-			storageDict.openOnLeft = (storageDict.openOnLeft == "true");
-			storageDict.openInBackground = (storageDict.openInBackground == "true");
-			storageDict.openURLDirectly = false;
-			dict = storageDict;
-		}
-		// Get stored settings or defaults
-		else if (storageDict.dict != null)
-		{
-			dict = storageDict.dict;
-		}
-		else
-		{
-			dict = getDefaultSettings();
-		}
-
-	});
-});
-
-chrome.runtime.onStartup.addListener(function()
-{
-	// Get stored settings or defaults
-	chrome.storage.sync.get('dict', function(storageDict)
-	{
-		if (storageDict.dict != null)
-		{
-			dict = storageDict.dict;
-		}
-		else
-		{
-			dict = getDefaultSettings();
+chrome.runtime.onInstalled.addListener(function (details) {
+	chrome.storage.sync.get('dict', function (storageDict) {
+		if (storageDict.search1 != null) { // Check for old format settings
+			const oldSettings = {
+				"search1": storageDict.search1,
+				"search2": storageDict.search2,
+				"search3": storageDict.search3,
+				"search4": storageDict.search4,
+				"openNewTab": (storageDict.openNewTab == "true"),
+				"openOnLeft": (storageDict.openOnLeft == "true"),
+				"openInBackground": (storageDict.openInBackground == "true"),
+				"openURLDirectly": false
+			};
+			chrome.storage.sync.set({ 'dict': oldSettings });
+		} else if (storageDict.dict == null) { // If no settings, set defaults
+			chrome.storage.sync.set({ 'dict': getDefaultSettings() });
 		}
 	});
-})
-
-// Get changes of stored settings
-chrome.storage.onChanged.addListener(function(changes, namespace)
-{
-	for (key in changes)
-	{
-		dict[key] = changes[key];
-	}
 });
 
 // Listen to keyboard hotkeys
-chrome.commands.onCommand.addListener(function(command)
-{
-	var searchURL;
-	// Select search site according to hotkey pressed
-	switch (command)
-	{
-		case "search1":
-			searchURL = dict["search1"];
-			break;
-		case "search2":
-			searchURL = dict["search2"];
-			break;
-		case "search3":
-			searchURL = dict["search3"];
-			break;
-		case "search4":
-			searchURL = dict["search4"];
-			break;
-	}
+chrome.commands.onCommand.addListener(function (command) {
+	chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+		const tab = tabs[0];
+		chrome.storage.sync.get('dict', function (storageDict) {
+			const currentSettings = storageDict.dict;
+			var searchURL;
+			// Select search site according to hotkey pressed
+			switch (command) {
+				case "search1":
+					searchURL = currentSettings["search1"];
+					break;
+				case "search2":
+					searchURL = currentSettings["search2"];
+					break;
+				case "search3":
+					searchURL = currentSettings["search3"];
+					break;
+				case "search4":
+					searchURL = currentSettings["search4"];
+					break;
+			}
 
-	// Get selected string from current tab
-	if (searchURL != "")
-	{
-		chrome.tabs.executeScript(null,
-			{
-				code: "window.getSelection().toString()"
-			},
-			function(selectedText)
-			{
-				if (selectedText != "")
-				{
-					var targetURL;
-					if (dict["openURLDirectly"] && validURL(selectedText.toString()))
+			// Get selected string from current tab
+			if (searchURL != "") {
+				chrome.scripting.executeScript(
 					{
-						targetURL = selectedText.toString();
-						if (!targetURL.startsWith("http"))
-						{
-							targetURL = "https://" + targetURL;
-						}
-					}
-					else
-					{
-						targetURL = searchURL + selectedText;
-					}
-					// Open result in current or new tab
-					if (dict["openNewTab"])
-					{
-						// Get index of current tab for correct positioning of new tab
-						chrome.tabs.query(
-						{
-							currentWindow: true,
-							active: true
-						}, function(tabs)
-						{
-							var targetTabIndex = tabs[0].index;
-							if (!dict["openOnLeft"])
-							{
-								targetTabIndex++;
+						target: { tabId: tab.id },
+						function: () => window.getSelection().toString(),
+					},
+					(injectionResults) => {
+						const selectedText = injectionResults[0].result;
+						if (selectedText != "") {
+							var targetURL;
+							if (currentSettings["openURLDirectly"] && validURL(selectedText.toString())) {
+								targetURL = selectedText.toString();
+								if (!targetURL.startsWith("http")) {
+									targetURL = "https://" + targetURL;
+								}
+							} else {
+								targetURL = searchURL + selectedText;
 							}
-							chrome.tabs.create(
-							{
-								index: targetTabIndex,
-								url: targetURL,
-								active: !dict["openInBackground"]
-							});
-						});
-					}
-					else
-					{
-						chrome.tabs.update(
-						{
-							url: targetURL
-						});
-					}
-				}
-			});
+							// Open result in current or new tab
+							if (currentSettings["openNewTab"]) {
+								// Get index of current tab for correct positioning of new tab
+								chrome.tabs.query(
+									{
+										currentWindow: true,
+										active: true
+									}, function (tabs) {
+										var targetTabIndex = tabs[0].index;
+										if (!currentSettings["openOnLeft"]) {
+											targetTabIndex++;
+										}
+										chrome.tabs.create(
+											{
+												index: targetTabIndex,
+												url: targetURL,
+												active: !currentSettings["openInBackground"]
+											});
+									});
+							} else {
+								chrome.tabs.update(tab.id, { url: targetURL });
+							}
+						}
+					});
+			}
+		});
+	});
+});
+
+// Listen for messages from options page
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+	if (request.action === "getSettings") {
+		chrome.storage.sync.get('dict', function (storageDict) {
+			sendResponse({ settings: storageDict.dict });
+		});
+		return true;
+	} else if (request.action === "getDefaultSettings") {
+		var defaults = getDefaultSettings();
+		chrome.storage.sync.set({ 'dict': defaults });
+		sendResponse({ defaultSettings: defaults });
+	} else if (request.action === "saveSettings") {
+		chrome.storage.sync.set({ 'dict': request.settings });
 	}
 });
