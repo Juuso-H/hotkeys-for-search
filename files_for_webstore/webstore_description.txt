@@ -8,7 +8,12 @@ Alt+W = Wikipedia
 Alt+A = Google Images
 Alt+S = YouTube
 
-The target search websites and keyboard shortcuts can be changed from the extension settings menu.
+Options:
+- Change the target search websites
+- Change the keyboard shortcut keys
+- Open the search in the current tab, a new tab or a background tab
+- Choose the position of the new tab (left or right of the current tab)
+
 
 Source code: https://github.com/Juuso-h/hotkeys-for-search
 
